@@ -1,0 +1,96 @@
+<?php 
+
+session_start();
+include("db.php");
+	include("connection.php");
+	include("functions.php");
+
+
+	if($_SERVER['REQUEST_METHOD'] == "POST")
+	{
+		//something was posted
+		$user_name = $_POST['user_name'];
+		$password = $_POST['password'];
+		$phonenumber = $_POST['phonenumber'];
+		
+		//prevent XSS attack
+		$user_name = htmlspecialchars($user_name);
+	//&& !is_numeric($user_name)
+
+		if(!empty($user_name) && !empty($password)&& is_numeric($phonenumber))
+		{
+
+			//save to database
+			try {
+			$query = "insert into users (phonenumber,email,password) values ('$phonenumber','$user_name','$password')";
+
+			mysqli_query($con, $query);
+
+			header("Location: login.php");
+			die;
+			}catch (Exception $e) {
+    echo 'Invalid number: ',  $e->getMessage(), "\n";
+}
+		}else
+		{
+			echo "Please enter some valid information!";
+			header("Location: login.php");
+		}
+	}
+?>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Signup</title>
+</head>
+<body>
+
+	<style type="text/css">
+	
+	#text{
+
+		height: 25px;
+		border-radius: 5px;
+		padding: 4px;
+		border: solid thin #aaa;
+		width: 100%;
+	}
+
+	#button{
+
+		padding: 10px;
+		width: 100px;
+		color: white;
+		background-color: lightblue;
+		border: none;
+	}
+
+	#box{
+
+		background-color: grey;
+		margin: auto;
+		width: 300px;
+		padding: 20px;
+	}
+
+	</style>
+
+	<div id="box">
+		
+		<form method="post">
+			<div style="font-size: 20px;margin: 10px;color: white;">Signup</div>
+			<input id="text" type="text" name="phonenumber">Phone<br><br>
+			
+			<input id="text" type="text" name="user_name">Email<br><br>
+			<input id="text" type="password" name="password">Password<br><br>
+			
+
+			<input id="button" type="submit" value="Signup"><br><br>
+
+			<a href="login.php">Click to Login</a><br><br>
+		</form>
+	</div>
+</body>
+</html>
